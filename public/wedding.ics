@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Sasani and Dinith//Wedding//EN
+BEGIN:VEVENT
+UID:sasani-dinith-20261210@wedding
+DTSTAMP:20261103T000000Z
+DTSTART:20261210T130000Z
+SUMMARY:Sasani & Dinith's Wedding
+LOCATION:Avenra Beach Hotel\, Hikkaduwa\, Sri Lanka
+DESCRIPTION:Join us to celebrate our wedding. 6:30 PM Sri Lanka time.
+END:VEVENT
+END:VCALENDAR

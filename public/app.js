@@ -1,0 +1,12 @@
+const pages=[...document.querySelectorAll('.page')];
+const menu=document.querySelector('#menu'), menuButton=document.querySelector('.menu-button');
+let index=0;
+function navigate(){const requested=pages.findIndex(p=>'#'+p.id===location.hash);index=requested<0?0:requested;pages.forEach((p,i)=>p.hidden=i!==index);document.body.classList.toggle('is-hero',index===0);document.querySelectorAll('footer nav a').forEach((a,i)=>{if(i===index)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});document.querySelector('#previous').disabled=index===0;document.querySelector('#next').disabled=index===pages.length-1;menu.hidden=true;menuButton.setAttribute('aria-expanded','false');window.scrollTo(0,0)}
+window.addEventListener('hashchange',navigate);navigate();
+document.querySelector('#previous').onclick=()=>location.hash=pages[Math.max(0,index-1)].id;
+document.querySelector('#next').onclick=()=>location.hash=pages[Math.min(pages.length-1,index+1)].id;
+menuButton.onclick=()=>{menu.hidden=!menu.hidden;menuButton.setAttribute('aria-expanded',String(!menu.hidden))};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;menuButton.setAttribute('aria-expanded','false');menuButton.focus()}});
+const form=document.querySelector('#rsvp-form');
+form.addEventListener('change',()=>{const declined=form.elements.attendance.value==='no';document.querySelector('#guest-fields').hidden=declined;form.elements.guests.disabled=declined;form.elements.dietary.disabled=declined});
+form.addEventListener('submit',async e=>{e.preventDefault();const status=document.querySelector('#form-status'),button=form.querySelector('button[type=submit]');button.disabled=true;status.textContent='Sending your reply…';try{const data=Object.fromEntries(new FormData(form));data.guests=data.attendance==='yes'?Number(data.guests):0;const response=await fetch('/api/rsvp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw new Error(result.error||'Your reply could not be saved. Please try again or call us below.');form.hidden=true;status.textContent='';const thanks=document.createElement('p');thanks.className='invitation-copy';thanks.setAttribute('role','status');thanks.textContent=data.attendance==='yes'?'Thank you for your reply. We can’t wait to celebrate with you!':'Thank you for letting us know. You’ll be with us in spirit.';form.after(thanks)}catch(error){status.textContent=error.message}finally{button.disabled=false}});
